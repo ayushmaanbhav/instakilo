@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="InstaKilo">
+    <meta name="author" content="Ayush Jain">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>Instakilo</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/login.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" method="POST" enctype="multipart/form-data" action="/uploadImage">
+        <h2 class="form-signin-heading">Please select a image to upload</h2>
+        <label for="fileToUpload" class="sr-only">Image</label>
+        <input type="file" id="fileToUpload" name="file" class="form-control" placeholder="Image" required autofocus>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div>
+
+  </body>
+</html>
