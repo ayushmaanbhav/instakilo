@@ -1,5 +1,7 @@
 package com.ayushmaanbhav.instakilo.route;
 
+import java.util.Set;
+
 import com.ayushmaanbhav.instakilo.entity.User;
 import com.ayushmaanbhav.instakilo.sao.ImageSao;
 import com.ayushmaanbhav.instakilo.util.UserAuthUtil;
@@ -29,7 +31,21 @@ public class ImageViewer implements Route {
         }
         User user = UserAuthUtil.getAuthenticatedUser(req);
 
-        return imageSao.getImagesForUser(user.getUsername()).toString();
+        Set<String> imageList = imageSao.getImagesForUser(user.getUsername());
+
+        StringBuffer images = new StringBuffer("[");
+        for (String imageUrl : imageList) {
+            images.append("\"");
+            images.append("");
+            images.append(imageUrl);
+            images.append("\",");
+        }
+        if (!imageList.isEmpty()) {
+            images.deleteCharAt(images.length() - 1);
+        }
+        images.append("]");
+
+        return images.toString();
     }
 
 }

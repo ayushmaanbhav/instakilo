@@ -11,22 +11,104 @@
 
     <title>Instakilo</title>
 
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/login.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/gallery/blueimp-gallery.min.css">
   </head>
 
   <body>
 
     <div class="container">
 
-      <form class="form-signin" method="POST" enctype="multipart/form-data" action="/uploadImage">
-        <h2 class="form-signin-heading">Please select a image to upload</h2>
-        <label for="fileToUpload" class="sr-only">Image</label>
+      <form id="uploadForm" class="form-signin" method="POST" enctype="multipart/form-data" action="/uploadImage">
+        <h2 class="form-signin-heading">Please select an image to upload</h2>
         <input type="file" id="fileToUpload" name="file" class="form-control" placeholder="Image" required autofocus>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" id="submitButton" type="submit">Upload</button>
       </form>
+      <img src="/img/loading2.gif" id="uploadingImage">
+
+      <div id="blueimp-gallery" class="blueimp-gallery">
+        <div class="slides"></div>
+          <h3 class="title"></h3>
+          <a class="prev">‹</a>
+          <a class="next">›</a>
+          <a class="close">×</a>
+          <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+      </div>
+
+      <div id="links" class="links"></div>
 
     </div>
+
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/gallery/blueimp-gallery.min.js"></script>
+
+    <script>
+      $("#uploadingImage").hide();
+      $("#uploadForm").submit(function(event) {
+        event.preventDefault();
+
+        $("#fileToUpload").hide();
+        $("#submitButton").hide();
+        $("#uploadingImage").show();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+          url: $(this).attr("action"),
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          type: 'POST'
+
+        }).done(function() {
+           window.location = "/";
+        }).fail(function(data) {
+           alert(data.status + ": " + data.responseText);
+        }).always(function() {
+            $("#uploadingImage").hide();
+            $("#fileToUpload").show();
+            $("#submitButton").show();
+        });
+
+        return false;
+      });
+    </script>
+
+    <script>
+      function getImages() {
+        $.get("/getImages").done(function (imageUrls) {
+
+          imageUrls = JSON.parse(imageUrls);
+          var galleryInput = [];
+          for (var index in imageUrls) {
+          	var imageUrl = imageUrls[index];
+            var thumbnail = imageUrl.substring(0, imageUrl.indexOf("-thumbnail"));
+
+            $("#links").append('<a href="' + thumbnail + '">' + '<img class="thumbnail-img" src="' + imageUrl + '">' + '</a>');
+          }
+
+        }).fail(function(data) {
+      	  console.log(data);
+      	  alert("Failed to get images. Pls reload");
+        });
+      }
+
+      getImages();
+    </script>
+
+    <script>
+      document.getElementById('links').onclick = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement,
+        link = target.src ? target.parentNode : target,
+        options = {index: link, event: event},
+        links = this.getElementsByTagName('a');
+        blueimp.Gallery(links, options);
+      };
+    </script>
 
   </body>
 </html>

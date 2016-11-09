@@ -54,7 +54,7 @@ public class ImageSaoImpl implements ImageSao {
         Set<String> setImages = new HashSet<>();
         for (S3ObjectSummary summary : listing.getObjectSummaries()) {
             if (summary.getKey().endsWith("thumbnail")) {
-                setImages.add(summary.getKey());
+                setImages.add("https://" + AppConfig.AWS_S3_BUCKET_NAME + ".s3.amazonaws.com/" + summary.getKey());
             }
         }
 
